@@ -5,24 +5,24 @@ Note Taking App (NTA)
 The primary objective of the Note Taking App (NTA) project is to create a fast, intuitive, and fully responsive web application that enables users to easily take and keep notes. The application aims to provide a seamless user experience for people that need extra help in remembering things or to keep track of things already accomplished.
 ## 3. Requirements
 ### 3.1. Functional Requirements
-● API Integration: The application must successfully integrate with the chosen Movie API to fetch movie data, including title, plot summary, cast, release date, and poster image.
-● Search Functionality: Users must be able to search for movies by title using a clear input field. Search results should update dynamically.
-● Browse/Discover: The application must display lists of popular, trending, and/or top-rated movies on the homepage.
-● Detailed View: Clicking on a search result or list item must navigate the user to a dedicated detail page showing comprehensive movie information.
-● Error Handling: The system must gracefully handle API errors (e.g., connection issues, rate limiting) and display relevant messages to the user.
-● Data Display: Movie listings must include at least the poster image, title, and release year.
+- API Integration: The application must successfully integrate with the chosen Movie API to fetch movie data, including title, plot summary, cast, release date, and poster image.
+- Search Functionality: Users must be able to search for movies by title using a clear input field. Search results should update dynamically.
+- Browse/Discover: The application must display lists of popular, trending, and/or top-rated movies on the homepage.
+- Detailed View: Clicking on a search result or list item must navigate the user to a dedicated detail page showing comprehensive movie information.
+- Error Handling: The system must gracefully handle API errors (e.g., connection issues, rate limiting) and display relevant messages to the user.
+- Data Display: Movie listings must include at least the poster image, title, and release year.
 ### 3.2. Non-Functional Requirements
-● Performance: All pages and search results must load quickly, aiming for an initial load time of under 3 seconds.
-● Responsiveness: The user interface must be fully functional and aesthetically pleasing on all screen sizes, including mobile, tablet, and desktop.
-● Security: API keys must be handled securely on the server-side (if applicable) or through environment variables.
-● Usability: The interface must be clean, minimal, and easy to navigate.
+- Performance: All pages and search results must load quickly, aiming for an initial load time of under 3 seconds.
+- Responsiveness: The user interface must be fully functional and aesthetically pleasing on all screen sizes, including mobile, tablet, and desktop.
+- Security: API keys must be handled securely on the server-side (if applicable) or through environment variables.
+- Usability: The interface must be clean, minimal, and easy to navigate.
 ##v4. User Stories
 The following user stories define the core features from the end-user perspective:
-● As a movie fan, I want to see a list of currently popular movies on the homepage, so that I can quickly find something new to watch.
-● As a user, I want to be able to search for a movie by title (e.g., Inception), so that I can quickly find the exact film I'm looking for.
-● As a user, I want to click on a movie poster or title, so that I can view a dedicated page with the full synopsis, cast, and rating.
-● As a user, I want the site to look good and work perfectly on my phone, so that I can use the movie finder while I'm on the go.
-● As a researcher, I want to see the official release date and runtime, so that I have accurate factual information about the film.
+- As a movie fan, I want to see a list of currently popular movies on the homepage, so that I can quickly find something new to watch.
+- As a user, I want to be able to search for a movie by title (e.g., Inception), so that I can quickly find the exact film I'm looking for.
+- As a user, I want to click on a movie poster or title, so that I can view a dedicated page with the full synopsis, cast, and rating.
+- As a user, I want the site to look good and work perfectly on my phone, so that I can use the movie finder while I'm on the go.
+- As a researcher, I want to see the official release date and runtime, so that I have accurate factual information about the film.
 ##v5. Implementation Details
 ### 5.1. Technical Stack (Proposed)
 Component
@@ -50,3 +50,4 @@ deliverables:
 3. Project Documentation: This project description document and a README file providing setup instructions.
 
 4. UI Mockups/Design: Simple wireframes or design concepts (if created) to illustrate the final look and feel of the application.
+
