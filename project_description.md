@@ -41,16 +41,22 @@ The following user stories define the core features from the end-user perspectiv
 
 ## **5.1. Technical Stack (Proposed)**
 
-| **Component**          | **Technology**                    | **Rationale**                                                                       |
-| ---------------------- | --------------------------------- | ----------------------------------------------------------------------------------- |
-| **Frontend Framework** | React; Angular; Vanilla HTML + JS | Modern framework for efficient component-based UI development and state management. |
-| **Styling**            | Tailwind CSS                      | Utility-first framework for rapid, responsive, and aesthetically pleasing design.   |
-| **Data Fetching**      | Fetch API; Axios                  | Standard HTTP client for API requests.                                              |
-| **Deployment**         | Firebase Hosting; Netlify         | Reliable platform for hosting the static web application.                           |
+| **Component**          | **Technology**                       | **Rationale**                                                                                   |
+| ---------------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| **Frontend Framework** | React; Angular; Vanilla HTML + JS    | Modern framework for efficient component-based UI development and state management.             |
+| **Styling**            | Tailwind CSS                         | Utility-first framework for rapid, responsive, and aesthetically pleasing design.               |
+| **Backend Framework**  | Node.js                              | Provides RESTful API endpoints for handling CRUD operations on notes and user authentication.   |
+| **Database**           | MongoDB                              | Stores user accounts and note data persistently. Choice depends on preference for NoSQL vs SQL. |
+| **API Communication**  | Fetch API; Axios                     | Handles HTTP requests between frontend and backend.                                             |
+| **Authentication**     | JSON Web Tokens (JWT); Firebase Auth | Secure user login, session handling, and protected routes.                                      |
+| **Deployment**         | Frontend: Vercel / Netlify           |
+
+Backend: Render / Railway / Heroku
+Database: MongoDB Atlas / Supabase | Scalable hosting for full-stack architecture with separate deployment for client, server, and database. |
 
 ## **5.2. API Integration Strategy**
 
-The application will use the official API endpoints for searching and fetching movie details. State management will be used to handle API loading states and caching where appropriate to improve performance and reduce redundant calls. API keys will be stored securely.
+The application will expose custom RESTful API endpoints for creating, reading, updating, and deleting notes. Authentication middleware will ensure only authorized users can access their data.
 
 # **6. Deliverables**
 
