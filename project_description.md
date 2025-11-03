@@ -49,10 +49,9 @@ The following user stories define the core features from the end-user perspectiv
 | **Database**           | MongoDB                              | Stores user accounts and note data persistently. Choice depends on preference for NoSQL vs SQL. |
 | **API Communication**  | Fetch API; Axios                     | Handles HTTP requests between frontend and backend.                                             |
 | **Authentication**     | JSON Web Tokens (JWT); Firebase Auth | Secure user login, session handling, and protected routes.                                      |
-| **Deployment**         | Frontend: Vercel / Netlify           |
-
-Backend: Render / Railway / Heroku
-Database: MongoDB Atlas / Supabase | Scalable hosting for full-stack architecture with separate deployment for client, server, and database. |
+| **Deployment**         | Frontend: Vercel / Netlify           |                                                                                                 |
+| **Backend:**           | Render / Railway / Heroku            |                                                                                                 |
+| **Database:**          | MongoDB Atlas / Supabase             | Scalable hosting for full-stack architecture with separate deployment for client, server, and database. |
 
 ## **5.2. API Integration Strategy**
 
@@ -67,3 +66,5 @@ deliverables:
 2. **Source Code:** Clean, well-commented, and organized source code for the frontend application.
 3. **Project Documentation:** This project description document and a README file providing setup instructions.
 4. **UI Mockups/Design:** Simple wireframes or design concepts (if created) to illustrate the final look and feel of the application.
+
+
