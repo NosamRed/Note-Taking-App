@@ -3,7 +3,7 @@ import app from "./app.js";
 
 (async () => {
     try {
-        await mongoose.connect("mongodb://localhost:27017/Notes");
+        await mongoose.connect("mongodb://localhost:27017/NOTE_TAKING_APP_DB");
         console.log("DB CONNECTED");
 
         const onListening = () => {

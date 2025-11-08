@@ -2,19 +2,32 @@ version: '3.8'
 
 services:
   app:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     volumes:
       - ../..:/workspaces:cached
 
     # Overrides default command so things don't shut down after the process ends.
+    # Keep this as sleep infinity if you want to start the app manually from the Codespace terminal.
+    # Replace with your actual start command (for automatic start) e.g. "npm run dev".
     command: sleep infinity
 
     # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
     network_mode: service:db
 
-    # Use "forwardPorts" in **devcontainer.json** to forward an app port locally. 
+    # If you prefer standard compose networking instead of network_mode, comment out the above line
+    # and uncomment depends_on below; then use the service hostname "db" for MONGO_URI.
+    # depends_on:
+    #   - db
+
+    # Environment variable so the app can connect to the db service automatically.
+    # Use the service hostname "db" when using standard compose networking (depends_on).
+    # When network_mode: service:db is used, using MONGO_URI=mongodb://db:27017/myapp still works inside the Codespace.
+    environment:
+      - MONGO_URI=mongodb://db:27017/myapp
+
+    # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.  
     # (Adding the "ports" property to this file will not forward from a Codespace.)
 
   db:
