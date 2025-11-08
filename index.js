@@ -1,20 +1,21 @@
 import mongoose from "mongoose";
 import app from "./app.js";
 
+const MONGO_URI = process.env.MONGO_URI ?? "mongodb://localhost:27017/NOTE_TAKING_APP_DB";
+
 (async () => {
-    try {
-        await mongoose.connect("mongodb://localhost:27017/NOTE_TAKING_APP_DB");
-        console.log("DB CONNECTED");
+  try {
+    await mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+    console.log("DB CONNECTED");
 
-        const onListening = () => {
-            console.log(`Listening on http://localhost:3000`);
-        }
+    const port = process.env.PORT ?? 3000;
+    app.listen(port, () => {
+      console.log(`Listening on http://localhost:${port}`);
+    });
+  } catch (error) {
+    console.error("error: ", error);
+    process.exit(1);
+  }
+})();
 
-        app.listen(3000, onListening);
 
-
-    } catch (error) {
-        console.error("error: ", error);
-        throw error;
-    }
-})()
