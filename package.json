@@ -1,0 +1,25 @@
+{
+  "name": "note-taking-app",
+  "version": "1.0.0",
+  "description": "An app to take notes",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NosamRed/Note-Taking-App.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NosamRed/Note-Taking-App/issues"
+  },
+  "homepage": "https://github.com/NosamRed/Note-Taking-App#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "mongoose": "^8.19.3"
+  }
+}
