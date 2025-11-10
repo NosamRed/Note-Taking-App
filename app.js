@@ -37,6 +37,4 @@ app.put("/users/:username/notes", async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 });
-
-
 export default app;
