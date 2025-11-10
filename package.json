@@ -20,7 +20,8 @@
   "homepage": "https://github.com/NosamRed/Note-Taking-App#readme",
   "dependencies": {
     "express": "^5.1.0",
+    "git": "^0.1.5",
+    "lfs": "^0.0.4",
     "mongoose": "^8.19.3"
-  },
-  "devDependencies": {}
+  }
 }
