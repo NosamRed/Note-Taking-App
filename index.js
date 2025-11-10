@@ -52,3 +52,4 @@ rl.question("Enter username: ", (usernameInput) => {
     process.exit(1);
   }
 })();
+//This is to test if the information from the codespaces gets save to the overall project
