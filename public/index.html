@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Note Taking App</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Note Taking App</h1>
+
+      <div class="login-section">
+        <input type="text" id="username" placeholder="Enter your username" />
+        <input
+          type="password"
+          id="password"
+          placeholder="Enter your password"
+        />
+        <button id="loadUser">Login</button>
+      </div>
+      <div id="notesSection" class="shown">
+        <!-- class shown is only showing the section, will become hidden when not login yet-->
+        <h2 id="welcome"></h2>
+        <div id="notesList">Notes Display Here</div>
+
+        <button id="addOrEditNote">Add or Edit Notes</button>
+      </div>
+      <div id="addOrEditNoteSection" class="show">
+        <!-- class show is only showing the section, will become hidden when not adding or editing yet-->
+        <h3>Add or Edit Note</h3>
+        <input type="text" id="title" placeholder="Note Title" />
+        <textarea id="content" placeholder="Note Content"></textarea>
+        <button id="saveNote">Save Note</button>
+      </div>
+    </div>
+  </body>
+</html>
