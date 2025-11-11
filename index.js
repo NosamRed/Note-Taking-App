@@ -54,7 +54,7 @@ rl.question("Enter username: ", (usernameInput) => {
 })();
 //This is to test if the information from the codespaces gets save to the overall project
 
-const usernameInput = document.getElementById("username");
+/*const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
 const loadUserBtn = document.getElementById("loadUser");
 const welcomeEl = document.getElementById("welcome");
@@ -153,3 +153,4 @@ function escapeHtml(str) {
   return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
 
+*/
