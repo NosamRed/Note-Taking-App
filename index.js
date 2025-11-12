@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import readline from "readline";
 import app from "./app.js";
-import { findByUsername, changeNoteByTitle } from "./models.js";
+import { findByUsername, changeNoteByTitle, verifyUserPassword } from "./models.js";
 
 //The Evil and Intimidating DOM Spoofer:
 // import { JSDOM } from "jsdom";
@@ -50,6 +50,8 @@ const MONGO_URI =
 
       rl.question("Enter username: ", (usernameInput) => {
         const username = usernameInput.trim();
+        rl.question("Enter password: ", (passwordInput) => {
+          const password = passwordInput.trim();
         rl.question(
           "Enter note title to update (or create): ",
           (titleInput) => {
@@ -59,6 +61,11 @@ const MONGO_URI =
                 const user = await findByUsername(username);
                 if (!user) {
                   console.log(`No user found with username: ${username}`);
+                  rl.close();
+                  const psswrd = await verifyUserPassword(password);
+                  if (!psswrd) {
+                    console.log("Invalid password.");
+                  }
                   rl.close();
                   return;
                 }
@@ -85,7 +92,7 @@ const MONGO_URI =
               }
             });
           }
-        );
+        )});
       });
     });
   } catch (err) {
@@ -94,103 +101,3 @@ const MONGO_URI =
   }
 })();
 
-//This is to test if the information from the codespaces gets save to the overall project
-
-// const usernameInput = document.getElementById("username");
-// const passwordInput = document.getElementById("password"); //Note this is unused currently
-// const loadUserBtn = document.getElementById("loadUser");
-// const welcomeEl = document.getElementById("welcome");
-// const notesListEl = document.getElementById("notesList");
-// const notesSection = document.getElementById("notesSection");
-// const addOrEditBtn = document.getElementById("addOrEditNote");
-// const addOrEditSection = document.getElementById("addOrEditNoteSection");
-// const titleInput = document.getElementById("title");
-// const contentInput = document.getElementById("content");
-// const saveNoteBtn = document.getElementById("saveNote");
-
-// let currentUsername = null;
-
-// function show(el) { if (el) el.classList.remove("hidden"); }
-// function hide(el) { if (el) el.classList.add("hidden"); }
-
-// // Use existing HTML as-is: hide sections until login
-// hide(notesSection);
-// hide(addOrEditSection);
-
-// // Login button: set username and optionally load notes via GET endpoint
-// loadUserBtn.addEventListener("click", async () => {
-//   const username = usernameInput.value.trim();
-//   if (!username) return alert("Please enter a username");
-//   currentUsername = username;
-//   welcomeEl.textContent = `Welcome, ${currentUsername}!`;
-//   // show notes area, keep login area unchanged
-//   show(notesSection);
-//   // try to load notes from server endpoint /api/get-user
-//   try {
-//     const resp = await fetch(`/api/get-user?username=${encodeURIComponent(currentUsername)}`);
-//     if (resp.ok) {
-//       const data = await resp.json();
-//       renderNotesList(data.notes ?? []);
-//     } else {
-//       notesListEl.textContent = `No user data loaded from server; logged in as ${currentUsername}.`;
-//     }
-//   } catch (err) {
-//     notesListEl.textContent = `Unable to load notes: ${err.message}`;
-//   }
-// });
-
-// // Toggle Add/Edit panel (keeps same HTML)
-// addOrEditBtn.addEventListener("click", () => {
-//   if (!currentUsername) return alert("Please login first");
-//   addOrEditSection.classList.toggle("hidden");
-//   if (!addOrEditSection.classList.contains("hidden")) {
-//     titleInput.value = "";
-//     contentInput.value = "";
-//     titleInput.focus();
-//   }
-// });
-
-// // Save note -> POST /api/update-note (calls changeNoteByTitle on server)
-// saveNoteBtn.addEventListener("click", async () => {
-//   if (!currentUsername) return alert("Please login first");
-//   const title = titleInput.value.trim();
-//   const content = contentInput.value;
-//   if (!title) return alert("Please enter a note title");
-
-//   saveNoteBtn.disabled = true;
-//   saveNoteBtn.textContent = "Saving...";
-
-//   try {
-//     const resp = await fetch("/api/update-note", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({ username: currentUsername, title, content })
-//     });
-//     const data = await resp.json();
-//     if (!resp.ok) {
-//       alert(`Save failed: ${data.error ?? resp.statusText}`);
-//     } else {
-//       renderNotesList(data.notes ?? []);
-//       addOrEditSection.classList.add("hidden");
-//     }
-//   } catch (err) {
-//     alert(`Network error: ${err.message}`);
-//   } finally {
-//     saveNoteBtn.disabled = false;
-//     saveNoteBtn.textContent = "Save Note";
-//   }
-// });
-
-// function renderNotesList(notes) {
-//   if (!Array.isArray(notes) || notes.length === 0) {
-//     notesListEl.textContent = "No notes yet.";
-//     return;
-//   }
-//   notesListEl.innerHTML = notes.map(n =>
-//     `<div class="note"><strong>${escapeHtml(n.title ?? "Untitled")}</strong><div class="note-content">${escapeHtml(n.content ?? "")}</div></div>`
-//   ).join("");
-// }
-
-// function escapeHtml(str) {
-//   return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-// }

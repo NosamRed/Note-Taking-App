@@ -29,7 +29,7 @@ export async function changeNoteByTitle(username, title, content) {
   if (updateResult) {
     return updateResult; // user document after update (lean)
   }
-
+  
   // no existing note with that title — push a new note
   const pushResult = await User.findOneAndUpdate(
     { username },
@@ -38,4 +38,17 @@ export async function changeNoteByTitle(username, title, content) {
   ).exec();
 
   return pushResult;
+}
+
+// models.js (add near other exports)
+
+export async function verifyUserPassword(username, candidatePassword) {
+
+  const user = await User.findOne({ username }).lean().exec();
+
+  if (!user) return null;            // user not found
+  
+  const matches = user.password === candidatePassword;
+  
+  return matches ? { username: user.username, notes: user.notes ?? [] } : null;
 }

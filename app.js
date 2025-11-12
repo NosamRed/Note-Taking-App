@@ -1,5 +1,5 @@
 import express from "express";
-import { findByUsername, changeNoteByTitle } from "./models.js";
+import { findByUsername, changeNoteByTitle, verifyUserPassword } from "./models.js";
 
 const app = express();
 
@@ -40,4 +40,21 @@ app.put("/users/:username/notes", async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 });
+
+app.post("/login", express.json(), async (req, res) => {
+  try {
+    const { username, password } = req.body ?? {};
+    if (!username || !password) return res.status(400).json({ message: "username and password required" });
+
+    const safeUser = await verifyUserPassword(username, password);
+    if (!safeUser) return res.status(401).json({ message: "invalid credentials" });
+
+    return res.status(200).json(safeUser); // { username, notes }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+});
+
+
 export default app;
