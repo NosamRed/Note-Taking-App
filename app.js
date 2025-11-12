@@ -1,12 +1,11 @@
 import express from "express";
 import { findByUsername, changeNoteByTitle } from "./models.js";
 
-
 const app = express();
 
+app.use(express.static("public"));
+
 app.use(express.json());
-
-
 
 app.get("/users/:username", async (req, res) => {
   try {
@@ -27,10 +26,14 @@ app.put("/users/:username/notes", async (req, res) => {
 
     const updatedUser = await changeNoteByTitle(username, title, content ?? "");
 
-    if (!updatedUser) return res.status(404).json({ message: "User not found" });
+    if (!updatedUser)
+      return res.status(404).json({ message: "User not found" });
 
     // return just username and notes if you prefer
-    const response = { username: updatedUser.username, notes: updatedUser.notes ?? [] };
+    const response = {
+      username: updatedUser.username,
+      notes: updatedUser.notes ?? [],
+    };
     return res.status(200).json(response);
   } catch (err) {
     console.error(err);
