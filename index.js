@@ -3,6 +3,32 @@ import readline from "readline";
 import app from "./app.js";
 import { findByUsername, changeNoteByTitle } from "./models.js";
 
+//The Evil and Intimidating DOM Spoofer:
+import { JSDOM } from "jsdom";
+const dom = new JSDOM(`<!DOCTYPE html>
+  <html>
+    <body>
+      <input id="username"/>
+      <input id="password"/>
+      <button id="loadUser"></button>
+      <div id="welcome"></div>
+      <div id="notesList"></div>
+      <div id="notesSection"></div>
+      <button id="addOrEditNote"></button>
+      <div id="addOrEditNoteSection"></div>
+      <input id="title"/>
+      <textarea id="content"></textarea>
+      <button id="saveNote"></button>
+    </body>
+  </html>`);
+
+global.window = dom.window;
+global.document = dom.window.document;
+global.HTMLElement = dom.window.HTMLElement;
+//End of Dom Spoofer
+//(Someone should probably slay the DOM Spoofer's existance in the code after his use has reached its end.)
+//(Also run"npm install jsdom" in cmd if jsdom aint working on your end)
+
 const MONGO_URI = process.env.MONGO_URI ?? "mongodb://localhost:27017/NOTE_TAKING_APP_DB";
 
 (async () => {
@@ -52,10 +78,12 @@ rl.question("Enter username: ", (usernameInput) => {
     process.exit(1);
   }
 })();
+
+
 //This is to test if the information from the codespaces gets save to the overall project
 
-/*const usernameInput = document.getElementById("username");
-const passwordInput = document.getElementById("password");
+const usernameInput = document.getElementById("username");
+const passwordInput = document.getElementById("password"); //Note this is unused currently 
 const loadUserBtn = document.getElementById("loadUser");
 const welcomeEl = document.getElementById("welcome");
 const notesListEl = document.getElementById("notesList");
@@ -153,4 +181,3 @@ function escapeHtml(str) {
   return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
 
-*/
