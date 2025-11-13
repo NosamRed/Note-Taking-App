@@ -9,9 +9,9 @@
   <body>
     <script src="script.js" defer></script>
     <div class="container">
-      <h1>Note Taking App</h1>
-
-      <div class="login-section">
+      <img src="logo.png" alt="App Logo" style="height: 80px" />
+      <div id="login-section" class="hidden">
+        <h1>Note Taking App</h1>
         <input type="text" id="username" placeholder="Enter your username" />
         <input
           type="password"
@@ -19,10 +19,41 @@
           placeholder="Enter your password"
         />
         <button id="loadUser">Login</button>
+        <button id="show-signup">Don't have an account?</button>
       </div>
-      <div id="notesSection" class="shown">
+
+      <div id="signup-section" class="show">
+        <h2>Sign Up</h2>
+        <form id="signup-form">
+          <input
+            type="text"
+            id="signup-username"
+            placeholder="Username"
+            required
+          />
+          <input
+            type="password"
+            id="signup-password"
+            placeholder="Password"
+            required
+          />
+          <button type="submit">Sign Up</button>
+        </form>
+        <button id="back-to-login">Back to Login</button>
+        <div id="signup-message"></div>
+      </div>
+      <div id="notesSection" class="showen">
         <!-- class shown is only showing the section, will become hidden when not login yet-->
-        <h2 id="welcome"></h2>
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <h2 id="welcome"></h2>
+          <button id="logout-btn">Logout</button>
+        </div>
         <div id="notesList">Notes Display Here</div>
 
         <button id="addOrEditNote">Add or Edit Notes</button>

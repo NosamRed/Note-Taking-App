@@ -7,8 +7,8 @@ import {
   verifyUserPassword,
 } from "./models.js";
 
-const MONGO_URI = process.env.MONGO_URI ?? "mongodb://localhost:27017/local";
-//"mongodb://localhost:27017/NOTE_TAKING_APP_DB";
+const MONGO_URI =
+  process.env.MONGO_URI ?? "mongodb://localhost:27017/NOTE_TAKING_APP_DB";
 
 (async () => {
   try {

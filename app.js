@@ -1,11 +1,37 @@
 import express from "express";
-import { findByUsername, changeNoteByTitle, verifyUserPassword } from "./models.js";
+import User, {
+  findByUsername,
+  changeNoteByTitle,
+  verifyUserPassword,
+} from "./models.js";
 
 const app = express();
 
 app.use(express.static("public"));
 
 app.use(express.json());
+
+// Sign up endpoint
+app.post("/api/signup", async (req, res) => {
+  try {
+    const { username, password } = req.body ?? {};
+    if (!username || !password)
+      return res.status(400).json({ error: "Username and password required." });
+
+    // Check for duplicate user
+    const existing = await findByUsername(username);
+    if (existing)
+      return res.status(409).json({ error: "Username already exists." });
+
+    // Create new user
+    const user = new User({ username, password, notes: [] });
+    await user.save();
+    return res.status(201).json({ message: "User created successfully." });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Server error." });
+  }
+});
 
 app.get("/users/:username", async (req, res) => {
   try {
@@ -44,10 +70,14 @@ app.put("/users/:username/notes", async (req, res) => {
 app.post("/login", express.json(), async (req, res) => {
   try {
     const { username, password } = req.body ?? {};
-    if (!username || !password) return res.status(400).json({ message: "username and password required" });
+    if (!username || !password)
+      return res
+        .status(400)
+        .json({ message: "username and password required" });
 
     const safeUser = await verifyUserPassword(username, password);
-    if (!safeUser) return res.status(401).json({ message: "invalid credentials" });
+    if (!safeUser)
+      return res.status(401).json({ message: "invalid credentials" });
 
     return res.status(200).json(safeUser); // { username, notes }
   } catch (err) {
@@ -55,6 +85,5 @@ app.post("/login", express.json(), async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 });
-
 
 export default app;
