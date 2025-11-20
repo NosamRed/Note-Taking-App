@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 
 const NoteSchema = new mongoose.Schema({
   title: { type: String, required: true },
@@ -51,4 +52,28 @@ export async function verifyUserPassword(username, candidatePassword) {
   const matches = user.password === candidatePassword;
   
   return matches ? { username: user.username, notes: user.notes ?? [] } : null;
+}
+
+
+dotenv.config();
+
+const user = encodeURIComponent(process.env.MDB_USER ?? "NosamRed");
+const pass = encodeURIComponent(process.env.MDB_PASS ?? "ifWteVvXlwBkhn3W");
+const cluster = process.env.MDB_CLUSTER ?? "note-taking-app.mdyy2ls.mongodb.net";
+const dbName = process.env.MDB_NAME ?? "test";
+
+export const MONGO_URI = `mongodb+srv://${user}:${pass}@${cluster}/${dbName}?retryWrites=true&w=majority`;
+
+let connected = false;
+
+export async function connectDB() {
+  if (connected || mongoose.connection.readyState) {
+    return mongoose.connection;
+  }
+  await mongoose.connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  connected = true;
+  return mongoose.connection;
 }
