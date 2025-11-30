@@ -4,8 +4,16 @@ import User, {
   changeNoteByTitle,
   verifyUserPassword,
 } from "./models.js";
+import cors from 'cors';
+
 
 const app = express();
+
+app.use(cors({
+  origin: 'https://nosamend.github.io',
+  credentials: true
+}));
+
 
 app.use(express.static("docs"));
 

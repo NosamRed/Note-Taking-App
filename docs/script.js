@@ -1,5 +1,11 @@
-// Client-side JavaScript implementation to control view states and auth flows
-// Get HTML elements
+// script.js - updated to use Render service as API_BASE
+
+// Use local backend during development, otherwise use the deployed Render URL
+const API_BASE = window.location.hostname === "localhost"
+  ? "http://localhost:3000"
+  : "https://note-taking-app-p2tx.onrender.com";
+
+// Elements (script is loaded with `defer` in index.html)
 const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
 const loadUserBtn = document.getElementById("loadUser");
@@ -22,7 +28,7 @@ const saveNoteBtn = document.getElementById("saveNote");
 
 let currentUser = null;
 
-// helpers
+// Helpers
 function show(el) {
   if (!el) return;
   el.classList.remove("hidden");
@@ -31,8 +37,32 @@ function hide(el) {
   if (!el) return;
   el.classList.add("hidden");
 }
+function setDisabled(el, val) {
+  if (!el) return;
+  el.disabled = !!val;
+}
+function safeJson(res) {
+  return res.text().then((t) => {
+    try {
+      return t ? JSON.parse(t) : {};
+    } catch {
+      return {};
+    }
+  });
+}
 
-// INITIAL STATE: show login only
+// Escape text for safe insertion (prevents XSS)
+function escapeText(str) {
+  if (str == null) return "";
+  return String(str)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+// INITIAL STATE: show login only (consistent with HTML classes)
 document.addEventListener("DOMContentLoaded", () => {
   show(loginSection);
   hide(signupSection);
@@ -46,7 +76,6 @@ if (showSignupBtn) {
   showSignupBtn.addEventListener("click", () => {
     hide(loginSection);
     show(signupSection);
-    // focus first input
     const su = document.getElementById("signup-username");
     if (su) su.focus();
   });
@@ -69,87 +98,102 @@ if (signupForm) {
     const username = document.getElementById("signup-username").value.trim();
     const password = document.getElementById("signup-password").value;
     if (!username || !password) {
-      signupMessage.style.color = "red";
-      signupMessage.textContent = "Username and password are required.";
+      if (signupMessage) {
+        signupMessage.style.color = "red";
+        signupMessage.textContent = "Username and password are required.";
+      }
       return;
     }
-    signupMessage.textContent = "";
+    if (signupMessage) signupMessage.textContent = "";
+    setDisabled(signupForm.querySelector("button[type=submit]"), true);
+
     try {
-      const res = await fetch("/api/signup", {
+      const res = await fetch(`${API_BASE}/api/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
-      const data = await res.json().catch(() => ({}));
+      const data = await safeJson(res);
       if (res.ok) {
-        signupMessage.style.color = "green";
-        signupMessage.textContent =
-          "Sign up successful! Redirecting to login...";
+        if (signupMessage) {
+          signupMessage.style.color = "green";
+          signupMessage.textContent = "Sign up successful! Redirecting to login...";
+        }
         signupForm.reset();
-        // Return to login and prefill username
         setTimeout(() => {
           hide(signupSection);
           show(loginSection);
           if (usernameInput) usernameInput.value = username;
           if (passwordInput) passwordInput.focus();
-        }, 900);
+        }, 700);
       } else {
-        signupMessage.style.color = "red";
-        signupMessage.textContent = data.error || "Sign up failed.";
+        if (signupMessage) {
+          signupMessage.style.color = "red";
+          signupMessage.textContent = data.error || data.message || "Sign up failed.";
+        } else {
+          alert(data.error || data.message || "Sign up failed.");
+        }
       }
     } catch (err) {
-      signupMessage.style.color = "red";
-      signupMessage.textContent = "Error connecting to server.";
+      if (signupMessage) {
+        signupMessage.style.color = "red";
+        signupMessage.textContent = "Error connecting to server.";
+      } else {
+        alert("Error connecting to server.");
+      }
+    } finally {
+      setDisabled(signupForm.querySelector("button[type=submit]"), false);
     }
   });
 }
 
-// Login button uses /login endpoint which verifies password server-side
+// Login button
 if (loadUserBtn) {
   loadUserBtn.addEventListener("click", async () => {
-    const username = usernameInput.value.trim();
-    const password = passwordInput.value.trim();
-    if (!username || !password)
-      return alert("Please enter both username and password.");
+    const username = usernameInput?.value?.trim() ?? "";
+    const password = passwordInput?.value ?? "";
+    if (!username || !password) return alert("Please enter both username and password.");
 
+    setDisabled(loadUserBtn, true);
     try {
-      const res = await fetch("/login", {
+      const res = await fetch(`${API_BASE}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
       if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
+        const body = await safeJson(res);
         return alert(body.message || body.error || "Login failed.");
       }
-      const user = await res.json();
+      const user = await safeJson(res);
+      // server should return { username, notes }
       currentUser = user;
-      welcomeEl.textContent = `Ah, so you have returned ${user.username}...`;
+      welcomeEl.textContent = `Welcome back, ${escapeText(user.username)}.`;
       renderNotes(user.notes ?? []);
       show(notesSection);
       hide(loginSection);
       hide(signupSection);
-      // ensure logout button visible and wired
-      if (logoutBtn) logoutBtn.style.display = "inline-block";
+      if (logoutBtn) show(logoutBtn);
     } catch (err) {
-      alert("Error logging in: " + err.message);
+      alert("Error logging in: " + (err?.message || err));
+    } finally {
+      setDisabled(loadUserBtn, false);
     }
   });
 }
 
-// Logout handler: clear session and return to login
+// Logout handler
 if (logoutBtn) {
   logoutBtn.addEventListener("click", () => {
     currentUser = null;
-    // clear UI
     welcomeEl.textContent = "";
     notesListEl.innerHTML = "";
     hide(notesSection);
     hide(addOrEditSection);
     show(loginSection);
-    // clear inputs
     if (usernameInput) usernameInput.value = "";
     if (passwordInput) passwordInput.value = "";
+    if (logoutBtn) hide(logoutBtn);
   });
 }
 
@@ -157,9 +201,14 @@ if (logoutBtn) {
 if (addOrEditBtn) {
   addOrEditBtn.addEventListener("click", () => {
     if (!currentUser) return alert("Please login first.");
-    addOrEditSection.classList.toggle("hidden");
-    titleInput.value = "";
-    contentInput.value = "";
+    if (addOrEditSection.classList.contains("hidden")) {
+      show(addOrEditSection);
+      titleInput.value = "";
+      contentInput.value = "";
+      titleInput.focus();
+    } else {
+      hide(addOrEditSection);
+    }
   });
 }
 
@@ -167,48 +216,58 @@ if (addOrEditBtn) {
 if (saveNoteBtn) {
   saveNoteBtn.addEventListener("click", async () => {
     if (!currentUser) return alert("Please log in first!");
-
     const title = titleInput.value.trim();
     const content = contentInput.value.trim();
+    if (!title) return alert("Title is required!");
 
-    if (!title) {
-      alert("Title is required!");
-      return;
-    }
-
+    setDisabled(saveNoteBtn, true);
     try {
-      const res = await fetch(
-        `/users/${encodeURIComponent(currentUser.username)}/notes`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title, content }),
-        }
-      );
+      const res = await fetch(`${API_BASE}/users/${encodeURIComponent(currentUser.username)}/notes`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, content }),
+      });
       if (!res.ok) {
-        alert("Failed to save note.");
-        return;
+        const body = await safeJson(res);
+        return alert(body.message || "Failed to save note.");
       }
-      const update = await res.json();
-      renderNotes(update.notes);
+      const update = await safeJson(res);
+      if (update && Array.isArray(update.notes)) {
+        currentUser.notes = update.notes;
+        renderNotes(update.notes);
+      }
       alert("Note saved successfully.");
-      addOrEditSection.classList.add("hidden");
+      hide(addOrEditSection);
     } catch (err) {
-      alert("Error saving note: " + err.message);
+      alert("Error saving note: " + (err?.message || err));
+    } finally {
+      setDisabled(saveNoteBtn, false);
     }
   });
 }
 
+// Render notes safely (no innerHTML with user content)
 function renderNotes(notes) {
   notesListEl.innerHTML = "";
   if (!notes || notes.length === 0) {
-    notesListEl.innerHTML = "<p>No notes yet.</p>";
+    const p = document.createElement("p");
+    p.textContent = "No notes yet.";
+    notesListEl.appendChild(p);
     return;
   }
   notes.forEach((note) => {
-    const div = document.createElement("div");
-    div.className = "note";
-    div.innerHTML = `<strong>${note.title}</strong><p>${note.content}</p>`;
-    notesListEl.appendChild(div);
+    const wrapper = document.createElement("div");
+    wrapper.className = "note";
+
+    const titleEl = document.createElement("strong");
+    titleEl.textContent = note.title ?? "";
+
+    const contentEl = document.createElement("p");
+    contentEl.textContent = note.content ?? "";
+
+    wrapper.appendChild(titleEl);
+    wrapper.appendChild(contentEl);
+
+    notesListEl.appendChild(wrapper);
   });
 }
