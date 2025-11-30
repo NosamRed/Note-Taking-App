@@ -10,7 +10,7 @@ import cors from 'cors';
 const app = express();
 
 app.use(cors({
-  origin: 'https://nosamend.github.io',
+  origin: 'https://nosamred.github.io',
   credentials: true
 }));
 
